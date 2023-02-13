@@ -1,0 +1,218 @@
+1. Write a bash script that organizes a given directory.
+
+We have a directory containing: music, videos, images, logs and perhaps other files.  Your task is to orhanize files into categories and get rif o some of them.
+
+Specifically, after your script has made changes, the directory shuld appear as follows:
+a new directory, "music", should contain all files with ".mp3" and ".flac" extensions;
+a new directory, "images", should contain all files with ".jpg" and ".png" extensions;
+a new directory, "videos", should contain all files with ".avi" and ".mov" extensions;
+all other files with ".log" extension should be removed;
+other files not already  mentioned in this list must not be changed. 
+
+Note that script takes no arguments and will be executed inside the directory that has to be orhanized.
+
+For example, given the following directory contents:
+bike.png
+car.jpg
+comedy.mov
+error.log
+horror.avi
+info.txt
+interview.mp3
+song.flac
+tree-small.jpeg
+11.10.2017_y
+some-directory/ nested-file.log
+
+the script should leave the directory in the following state:
+images/
+  bike.png
+  car.jpg
+music/
+  interview.mp3
+  song.flac
+videos/
+  comedy.mov
+  horror.avi
+info.txt
+tree-small.jpeg
+11.10.2017_y
+some-directory/
+  nested-file.log
+
+Assume that:
+there are between 7 and 1000 files in the given current direcory;
+every filename consists only of lower-case English letters, digits, and special charracters "-_- without quotes;
+the filename is not longer than 20 characters;
+there are no files named "images", "music", "videos" at the initial state;
+there exists at leaast one file for each of the following extensions: "jpg", "png" ,"avi", "mov", "flac","mp3" and "log";
+the machine is running Ubuntu 16.04
+
+Your solution focus on correctness. 
+
+
+Answer:
+
+#!/bin/bash
+
+# Create the required directories
+mkdir -p music images videos
+
+# Move all .mp3 and .flac files to music directory
+mv *.mp3 *.flac music/ 2>/dev/null
+
+# Move all .jpg and .png files to images directory
+mv *.jpg *.png images/ 2>/dev/null
+
+# Move all .avi and .mov files to videos directory
+mv *.avi *.mov videos/ 2>/dev/null
+
+# Remove all .log files
+rm *.log 2>/dev/null
+
+echo "Successfully organized the directory."
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+2. 
+### 1. Where can variables be defined for use in Ansible? 
+A: In the inventory file. 
+B: In a managed node environment. 
+C: At the command line. 
+D: In an Ansible role. 
+Answers : A, C, D  Answered : wrong, A,D
+
+### 2. Indicate which is the correct order of overriding values of variables of the same name defined in different places (the last place being the most important):
+ A: role defaults -> group_vars -> role vars -> extra vars 
+ B: host_vars -> group_vars -> include_vars -> extra vars 
+ C: extra vars -> group_vars -> host_vars -> role defaults 
+ D: role defaults -> role vars -> group_vars -> host_vars 
+Answers : C: extra vars -> group_vars -> host_vars -> role defaults   Answered : wrong, A
+
+### 3. How is it possible to check if a variable is defined? 
+A: some_variable is defined 
+B: some_variable is not None 
+C: exists(some_variable) 
+D: is_defined(some_variable) 
+Answers : B: some_variable is not None, C: exists(some_variable)   Answered : wrong, B
+
+### 4. Specify what should be placed in PLACEHOLDER to group together many groups in the inventory file like this: 
+[web] web.example.com [database] database.example.com [production:PLACEHOLDER] web database 
+A: group 
+B: children 
+C: join 
+D: link
+Answers : A: group   Answered : wrong, B
+
+### 5. What will be the result of this task? 
+- debug: msg: "Hello {{ item }}!" vars: user_names: - Greg - Ann - John with_items: - "{{ user_names }}" 
+A: Three debug messages printing “Hello Greg!”, “Hello Ann!”, “Hello John!” 
+B: Three debug messages printing “Hello John!”, “Hello Ann!”, “Hello Greg!” 
+C: Three debug messages printing the hello output in a random order. 
+D: One debug message printing the hello output with the list of names. 
+Answers : A: Three debug messages printing “Hello Greg!”, “Hello Ann!”, “Hello John!”   Answered : right, A
+
+### 6. Where does Ansible keep the state between executions? 
+A: On a local machine (the machine on which the command is executed). 
+B: On the destination node. 
+C: On a node/database designed for that purpose. 
+D: Ansible doesn't retain the state between executions. 
+Answers : A: On a local machine (the machine on which the command is executed)   Answered : wrong, D
+
+### 7. What module can be used to copy a file from the local machine to the node? 
+A: file 
+B: copy 
+C: move 
+D: template 
+Answers : B: copy   Answered : right, B
+
+### 8. How can the output of one task be accessed in another task? 
+A: By using a source task name as a variable in another task. 
+B: By setting save_output: true in the source task. 
+C: By registering a variable in the source task. 
+D: This is not possible. 
+Answers : C: By registering a variable in the source task.   Answered : right, C
+
+### 9. Inventory can be passed to Ansible-playbook in the form of 
+A: only a single file 
+B: one or more files 
+C: a directory 
+D: a script 
+Answers : All the above   Answered : wrong, B
+
+### 10. How many vault passwords can be used in a single Ansible playbook? 
+A: Only one, because we can pass `--vault-password-file` only once. 
+B: One for every role. 
+C: One for every host. 
+D: As many as we want.
+Answers : A: Only one, because we can pass --vault-password-file only once.   Answered : right, A
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+3. You are given a matrix A representing a chessboard with N rows and M columns. Each square of the chessboarad contains an integer representing a points-based score. You have to place two rooks on the chessboard in such a way they cannot attach each other and the sim of points on their squares is maximal. Rooks in chess can attac each other only if they are in the same row or column. 
+ for example a given matrix 
+  0 1
+0|1|4|
+1|2|3|
+
+we can place rooks in two different ways:
+one rook on A[0][0] =1 and anpther rook on A[1][1]=3.The sume of points on these squares is 4. 
+one rook on A[0][1] =4 and anpther rook on A[1][0]=2.The sume of points on these squares is 6.
+
+Your task is to find the maximum sum of two squares of the chessboards on which the rooks can be placed. In the above example, answer ia 6.
+We cannot, for example, place the rooks at A[0][1] and A[1][1] (whose sum is 7), as the would attaclk each other.
+
+
+write a python function:
+
+	def solution(A)
+
+
+examples:
+1. Given matrix A with two rows and two columns:
+
+  0 1
+0|1|4|
+1|2|3|
+
+the function should return 6. We can achieve the maximum sum by selecting A[0][1]+A[1][0] = 4+2. The selected squares are marked in green.
+
+1. Given matrix A with two rows and two columns:
+
+  0  1 2
+0|15|1|5|
+1|16|3|8|
+2|2 |6|4|
+
+the function should return 23. We can achieve the maximum sum by selecting A[0][1]+A[1][2] = 15+8. The selected squares are marked in green.
+
+Please write python code to satisfy below test cases:
+
+Example test:   [[1, 4], [2, 3]]
+expected 6
+
+Example test:   [[15, 1, 5], [16, 3, 8], [2, 6, 4]]
+expected 23
+
+Example test:   [[12, 12], [12, 12], [0, 7]]
+expected 24
+
+Example test:   [[1, 2, 14], [8, 3, 15]]
+expected 22
+
+
+Solution:
+
+def solution1(A):
+    max_sum = 0
+    for i in range(len(A)):
+        row_max = max(A[i])
+        for j in range(i+1, len(A)):
+            col_max = max(row_max,max(A[j][k] for k in range(len(A[0]))))
+            max_sum = max(max_sum, row_max + col_max)
+    return max_sum
+
+
+print(solution1([[1, 4], [2, 3]]))
+print(solution1([[15, 1, 5], [16, 3, 8], [2, 6, 4]]))
+print(solution1([[12, 12], [12, 12], [0, 7]]))
+print(solution1([[1, 2, 14], [8, 3, 15]]))

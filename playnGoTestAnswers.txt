@@ -1,0 +1,122 @@
+1) Reading API requests
+
+import requests
+
+response = requests.get('http://127.0.0.1:8081/products')
+products = response.json()
+
+for product in products:
+    if 'manufacturer' in product:
+        print(f"Product {product['name']} has price {product['price']} and manufacturer {product['manufacturer']}")
+    else:
+        print(f"Product {product['name']} has price {product['price']} and no manufacturer")
+--------------------------------------------------------------------------------------------------------------------------------------
+
+2) Importing CSV data
+
+a) Using Pandas Module
+
+import pandas as pd
+
+df = pd.read_csv('/root/customers/data.csv')
+print('Total customers:')
+print(df.shape[0])
+
+_____________________________________________________________________________________________________________________________________
+b) Using CSV module
+
+import csv
+
+customers = 0
+
+with open("data.csv", "r") as file:
+    reader = csv.reader(file)
+    next(reader)
+    for row in reader:
+        customers += 1
+
+print("Total customers:")
+print(customers)
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+3) Count the data attributes in CSV with same values
+
+import csv
+from collections import defaultdict
+
+city_counts = defaultdict(int)
+with open("/root/customers/data.csv","r") as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        city_counts[row["CITY"]] += 1
+
+print("Customers by city:")
+    for city, count in sorted(city_counts.items()):
+        print("{}: {}".format(city, count))
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+4) Read content of files in subdirectories
+
+import os
+
+def find_missing_points(path):
+    topics = {}
+    
+    for dirpath, dirnames, filenames in os.walk(path):
+        for filename in filenames:
+            if filename == "README.txt":
+                with open(os.path.join(dirpath, filename), "r") as f:
+                    lines = f.readlines()
+                    task_description = "".join(lines[:lines.index("---\n")]).strip()
+                    task_topic = "".join(lines[lines.index("---\n") + 1 : lines.index("---\n", lines.index("---\n") + 1)]).strip()
+                    score = "".join(lines[lines.index("---\n", lines.index("---\n") + 1) + 1 :]).strip().split("/")
+                    luke_score = int(score[0])
+                    max_score = int(score[1])
+                    if luke_score != max_score:
+                        task = os.path.basename(dirpath)
+                        if task_topic not in topics:
+                            topics[task_topic] = [luke_score, max_score, [task]]
+                        else:
+                            topics[task_topic][0] += luke_score
+                            topics[task_topic][1] += max_score
+                            topics[task_topic][2].append(task)
+
+    result = []
+    for topic, data in sorted(topics.items()):
+        missing_points = data[1] - data[0]
+        tasks = "\n".join(["--" + task for task in sorted(data[2])])
+        result.append(f"{topic} ({missing_points})\n{tasks}\n")
+    return "\n".join(result)
+
+
+print(find_missing_points(R"/root/devops/tasks"))
+
+
+---------------------------------------------------------------------------------------------------------------------------------------
+
+5) Read files for certain keyword
+
+import os
+
+def most_common_error(log_dir):
+    error_count = {}
+    for filename in os.listdir(log_dir):
+        if filename.endswith(".log"):
+            with open(os.path.join(log_dir, filename), 'r') as f:
+                for line in f:
+                    parts = line.strip().split("|")
+                    if len(parts)>1 and parts[1] == "ERROR":
+                        source_file = parts[2]
+                        if source_file in error_count:
+                            error_count[source_file] += 1
+                        else:
+                            error_count[source_file] = 1
+    error_count = sorted(error_count.items(), key=lambda x: (-x[1], x[0]))
+    return error_count
+
+log_dir = "/root/devops/logs"
+result = most_common_error(log_dir)
+for item in result:
+    print(item[0], item[1])
